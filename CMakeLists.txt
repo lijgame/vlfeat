@@ -14,11 +14,6 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
                                                "MinSizeRel" "RelWithDebInfo")
 endif()
 
-find_package(OpenMP)
-if(OPENMP_FOUND)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-endif()
-
 if(MSVC)
   set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
   add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
@@ -82,6 +77,11 @@ add_library(
 set_property(TARGET vl PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(vl PRIVATE -DVL_BUILD_DLL)
 target_include_directories(vl PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(OpenMP)
+if(OPENMP_FOUND)
+  target_link_libraries(vl PRIVATE OpenMP::OpenMP_CXX OpenMP::OpenMP_C)
+endif()
+
 list(
   APPEND
   vl_files
